@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TODOAPP</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <style>
+      .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .pagination a {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #f2f2f2;
+        color: #4285f4;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px; /* Adjust the value as per your desired spacing */
+      }
+
+      .pagination a:hover {
+        background-color: #ddd;
+      }
+
+      .current-page span {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #f2f2f2;
+        color: #4285f4;
+        text-decoration: none;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-right: 10px; /* Adjust the value as per your desired spacing */
+      }
+
+      .current-page span:hover {
+        background-color: #ddd;
+      }
+
+      .pagination a.page-link {
+        color: #3c4043;
+        text-decoration: none;
+        padding: 6px 12px;
+        border: 1px solid #dadce0;
+        margin: 0 2px;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+        font-size: 14px;
+      }
+
+      .pagination a.page-link:hover {
+        background-color: #f1f3f4;
+      }
+
+      .pagination .current-page {
+        font-weight: bold;
+        padding: 6px 12px;
+        border: 1px solid #dadce0;
+        margin: 0 2px;
+        border-radius: 4px;
+        background-color: #f1f3f4;
+      }
+
+      .pagination-word {
+        font-weight: bold;
+      }
+
+      .pagination a.page-link.next-link,
+      .pagination a.page-link.last-link {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+        font-size: 14px;
+      }
+
+      .pagination a.page-link.next-link:hover,
+      .pagination a.page-link.last-link:hover {
+        background-color: #0069d9;
+      }
+      .current-page {
+        margin-bottom: 20px;
+      }
+
+      .next-link {
+        margin-right: 10px;
+      }
+
+      .last-link {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #e3f2fd">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">ToDoList</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="/logout/">Logout</a>
+            </li>
+
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="/login/">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/register/">Register</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div>{% block content %} {% endblock %}</div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
