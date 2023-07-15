@@ -31,6 +31,7 @@ def search_todo(request):
     if request.user.is_authenticated:
         user = request.user
         form = TODOForm()
+        username = user.username
         search_query = request.GET.get('search')
 
         if search_query:
@@ -43,7 +44,7 @@ def search_todo(request):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj})
+        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj , 'username': username})
 
 
 def login(request):
