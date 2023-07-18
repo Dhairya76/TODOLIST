@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,  get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login as loginUser, logout as logoutUser
-from todo_app.forms import TODOForm
-from todo_app.models import TODO
+from todo_app.forms import TODOForm, SubTaskForm
+from todo_app.models import TODO, SubTask
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.core.exceptions import ObjectDoesNotExist
 
 
 @login_required(login_url='login')
@@ -16,14 +17,11 @@ def home(request):
         form = TODOForm()
         todos = TODO.objects.filter(user=user).order_by('priority')
         username = user.username
-        print(username)
-
-        # return render(request, 'index.html', context={'form': form, 'todos': todos})
-        paginator = Paginator(todos, 3)  # Display 5 todos per page
+        paginator = Paginator(todos, 3)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj , 'username': username})
+        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj, 'username': username})
 
 
 @login_required(login_url='login')
@@ -31,6 +29,7 @@ def search_todo(request):
     if request.user.is_authenticated:
         user = request.user
         form = TODOForm()
+        username = user.username
         search_query = request.GET.get('search')
 
         if search_query:
@@ -39,11 +38,34 @@ def search_todo(request):
         else:
             todos = TODO.objects.filter(user=user).order_by('priority')
 
+        print(todos)
+
         paginator = Paginator(todos, 3)  # Display 3 todos per page
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj})
+        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj, 'username': username})
+
+
+@login_required(login_url='login')
+def search_todo_category(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = TODOForm()
+        username = user.username
+        search_query_category = request.GET.get('search')
+
+        if search_query_category:
+            todos = TODO.objects.filter(
+                user=user, category__icontains=search_query_category).order_by('priority')
+        else:
+            todos = TODO.objects.filter(user=user).order_by('priority')
+
+        paginator = Paginator(todos, 3)  # Display 3 todos per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj, 'username': username})
 
 
 def login(request):
@@ -86,10 +108,12 @@ def register(request):
             user = form.save()
             print(user)
             if user is not None:
-                messages.success(request, "Your account has been created. Please log in.")
+                messages.success(
+                    request, "Your account has been created. Please log in.")
                 return redirect('login')
         else:
-            messages.error(request, "There was an error creating your account.")
+            messages.error(
+                request, "There was an error creating your account.")
             return render(request, 'register.html', context=context)
 
 
@@ -97,7 +121,6 @@ def register(request):
 def add_todo(request):
     if request.user.is_authenticated:
         user = request.user
-        print(user)
         form = TODOForm(request.POST)
         if form.is_valid():
             print(form.cleaned_data)
@@ -116,9 +139,6 @@ def logout(request):
 
 
 def delete_todo(request, id):
-    # messages.info(request, "Do you want to delete this task?")
-    # TODO.objects.get(pk=id).delete()
-    # return redirect('home')
     todo = TODO.objects.get(pk=id)
     if request.method == 'POST':
         todo.delete()
@@ -136,3 +156,74 @@ def change_status(request, id, status):
     todo.status = status
     todo.save()
     return redirect('home')
+
+
+@login_required(login_url='login')
+def add_subtask(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = SubTaskForm()
+        username = user.username
+        if request.method == 'POST':
+            form = SubTaskForm(request.POST)
+            if form.is_valid():
+                subtask = form.save(commit=False)
+                subtask.user = user
+                subtask.save()
+                return redirect("search_subtask")
+
+        context = {
+            'form': form,
+            'username': username,
+        }
+
+        return render(request, 'subtask.html', context=context)
+
+
+@login_required(login_url='login')
+def search_subtask(request):
+    if request.user.is_authenticated:
+        user = request.user
+        form = SubTaskForm()
+        username = user.username
+        subtasks = SubTask.objects.only(
+            'subtask_title', 'subtask_status', 'subtask_priority').all().order_by('subtask_priority')
+        print(subtasks)
+        
+
+        paginator = Paginator(subtasks, 3)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        subtask_values = [(subtask.subtask_title, subtask.subtask_status,
+                           subtask.subtask_priority) for subtask in page_obj]
+        print(subtask_values)
+
+        context = {
+            'form': form,
+            'subtasks': page_obj,
+            'username': username,
+            'page_obj': page_obj,
+        }
+
+        return render(request, 'subtask.html', context=context)
+
+
+def delete_subtask(request, subtask_id):
+    subtask = get_object_or_404(SubTask, id=subtask_id)
+
+    if request.method == 'POST':
+        subtask.delete()
+        return redirect('search_subtask')
+
+    context = {
+        'subtask': subtask
+    }
+    return render(request, 'delete_subtask.html', context=context)
+
+
+def change_status_subtask(request, subtask_id, subtask_status):
+    subtask = SubTask.objects.get(id=subtask_id)
+    subtask.subtask_status = subtask_status
+    subtask.save()
+    print(subtask.subtask_status)
+    return redirect('search_subtask')

@@ -1,0 +1,117 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container pt-4">
+  <div class="row p-0 mt-4">
+    <div class="col-lg-5 mx-auto shadow p-0">
+      <div class="alert alert-info">
+        <h3>Welcome, {{ username }}</h3>
+        <h3>Add Your SubTask for {{ todos.title }}</h3>
+      </div>
+      <div class="p-4">
+        <form action="/add-subtask/" method="POST">
+          {% csrf_token %} {% for field in form %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            <br />
+            <br />
+          </div>
+          {% endfor %}
+          <hr />
+          <input type="submit" value="Add SubTask" class="btn btn-success" />
+        </form>
+      </div>
+    </div>
+    <div class="col">
+      <!-- <div class="border"> -->
+      <!-- <div class="p-4"> -->
+      <!-- <form action="/search-subtask/" method="GET">
+            <div class="form-group">
+              <input
+                type="text"
+                name="search"
+                placeholder="Search todo..."
+                class="form-control mb-2"
+              />
+              <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+          </form> -->
+      <!-- </div> -->
+      <!-- </div> -->
+      {% if page_obj.has_other_pages %}
+      <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; First</a>
+        <a href="?page={{ page_obj.previous_page_number }}"
+          >&lsaquo; Previous</a
+        >
+        {% endif %}
+        <span class="current-page">{{ page_obj.number }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next &rsaquo;</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+        {% endif %}
+      </div>
+      {% endif %} {% if page_obj|length == 0 %}
+      <div class="p4">
+        <br />
+        <br />
+        <div class="alert alert-info text-center">
+          <p class="" style="font-size: 30px">No To Dos</p>
+        </div>
+        <br />
+        <br />
+      </div>
+      {% else %}
+      <div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for subtask in page_obj %}
+            <tr>
+              <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+              <td>{{ subtask.subtask_title }}</td>
+              <td>
+                {% if subtask.subtask_status == 'C' %}✅{% else %}⏲️{% endif %}
+              </td>
+              <td>{{ subtask.subtask_priority }}</td>
+              <td>
+                <a
+                  href="/delete-subtask/{{ subtask.id }}"
+                  title="Delete"
+                  style="color: white"
+                  >❌</a
+                >
+                {% if subtask.subtask_status == 'P' %}
+                <a
+                  href="/change-status-subtask/{{ subtask.id }}/C"
+                  title="Mark Completed"
+                  style="color: white"
+                  >✅</a
+                >
+                {% else %}
+                <a
+                  href="/change-status-subtask/{{ subtask.id }}/P"
+                  title="Mark Pending"
+                  style="color: white"
+                  >⏲️</a
+                >
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Delete Task</title>
+    <title>Delete SubTask</title>
     <script>
       function confirmDelete() {
-        return confirm("Are you sure you want to delete this task?");
+        return confirm("Are you sure you want to delete this subtask?");
       }
     </script>
   </head>
   <body>
-    <h1>Delete Task</h1>
-    <p>Task: {{ todo.title }}</p>
-    <form method="post" action="{% url 'delete_todo' todo.id %}">
+    <h1>Delete SubTask</h1>
+    <p>SubTask: {{ subtask.subtask_title }}</p>
+    <form method="post" action="{% url 'delete_subtask' subtask.id %}">
       {% csrf_token %}
       <input
         type="submit"
@@ -30,7 +30,7 @@
         "
       />
       <a
-        href="/"
+        href="/search-subtask/"
         class="btn-success"
         style="
           display: inline-block;

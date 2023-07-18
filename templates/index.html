@@ -4,11 +4,12 @@
     <div class="col-lg-5 mx-auto shadow p-0">
       <div class="alert alert-info">
         <h3>Welcome, {{ username }}</h3>
-        <h3>Add Your ToDoList</h3>
+        <h3>Add Your ToDoList </h3>
       </div>
       <div class="p-4">
         <form action="/add-todo/" method="POST">
           {% csrf_token %} {{ form.as_p }}
+
           <hr />
           <input type="submit" value="Add" class="btn btn-success" />
         </form>
@@ -17,15 +18,44 @@
     <div class="col">
       <div class="border">
         <div class="p-4">
-          <form action="/search-todo/" method="GET">
-            <input
-              type="text"
-              name="search"
-              placeholder="Search todo..."
-              class="form-control mb-2"
-            />
-            <input type="submit" value="Search" class="btn btn-primary" />
-          </form>
+          <div class="container pt-4">
+            <div class="row p-0 mt-4">
+              <div class="col-lg-6">
+                <form action="/search-todo/" method="GET">
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder="Search todo..."
+                      class="form-control mb-2"
+                    />
+                    <input
+                      type="submit"
+                      value="Search"
+                      class="btn btn-primary"
+                    />
+                  </div>
+                </form>
+              </div>
+              <div class="col-lg-6">
+                <form action="/search-todo-category/" method="GET">
+                  <div class="form-group">
+                    <input
+                      type="text"
+                      name="search"
+                      placeholder="Search todo category..."
+                      class="form-control mb-2"
+                    />
+                    <input
+                      type="submit"
+                      value="Search"
+                      class="btn btn-primary"
+                    />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
         {% if page_obj.has_other_pages %}
         <div class="pagination">
@@ -61,13 +91,15 @@
                 <th>Status</th>
                 <th>Priority</th>
                 <th>Update</th>
+                <th>Category</th>
               </tr>
             </thead>
             <tbody>
               {% for todo in page_obj %}
               <tr>
                 <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
-                <td>{{ todo.title }}</td>
+                <td>
+                  <a href="/add-subtask/" style="color: black; text-decoration: none;"> {{todo.title }}</td> </a>
                 <td>
                   {% if todo.status == 'C' %} ✅ {% else %} ⏲️ {% endif %}
                 </td>
@@ -95,6 +127,7 @@
                   >
                   {% endif %}
                 </td>
+                <td>{{ todo.category }}</td>
               </tr>
               {% endfor %}
             </tbody>
