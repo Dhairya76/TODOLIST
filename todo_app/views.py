@@ -65,11 +65,7 @@ def search_todo_category(request):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-<<<<<<< HEAD
         return render(request, 'index.html', context={'form': form, 'page_obj': page_obj, 'username': username})
-=======
-        return render(request, 'index.html', context={'form': form, 'page_obj': page_obj , 'username': username})
->>>>>>> 5a457edc702ace1c40ed3258543f1bfb98942b0b
 
 
 def login(request):
