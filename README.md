@@ -45,9 +45,22 @@ page 2
 
 ![status_changed](https://github.com/Dhairya76/TODOLIST/assets/82711994/9850be43-e323-4df2-8a17-24e430f6684c)
 
-8) And finally the logout option
+8) The logout option
 
 ![Logout_option](https://github.com/Dhairya76/TODOLIST/assets/82711994/191d2c3f-de51-422d-97e4-370ec25ce6e9)
+
+
+9) A new Category field has been created with default value as work and now you can search by category as well
+
+![Category_page](https://github.com/Dhairya76/TODOLIST/assets/82711994/72d79b1a-21eb-4497-abe9-1ceb69fd6dc7)
+
+
+10) Added SubTask field as well you can click on title of task and you will reach to subtask page all other functions like toggle status and delete subtask is also added
+![SubTask_page](https://github.com/Dhairya76/TODOLIST/assets/82711994/1c2f13d3-3a49-4e94-96e6-29301019d979)
+
+
+
+
 
    
 
