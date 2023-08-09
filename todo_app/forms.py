@@ -10,13 +10,6 @@ class TODOForm(ModelForm):
         fields = ['title', 'category', 'status', 'priority']
 
 
-# class SUBFORM(ModelForm):
-
-#     class Meta:
-#         model = Subtask
-#         fields = ['subtask_title', 'subtask_status', 'subtask_priority']
-
-
 class SubTaskForm(forms.ModelForm):
     class Meta:
         model = SubTask

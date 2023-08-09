@@ -135,6 +135,18 @@
         text-align: justify;
       "
     >
+    <div class="p-4">
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+            
+          </li>
+
+        {% endfor %}
+      </ul>
+      {% endif %}
       {% csrf_token %}
       <p>Username: {{form.username}}</p>
       <br />

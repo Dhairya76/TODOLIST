@@ -99,7 +99,7 @@
               <tr>
                 <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                 <td>
-                  <a href="/add-subtask/" style="color: black; text-decoration: none;"> {{todo.title }}</td> </a>
+                  <a href="/add-subtask/{{ todo.id }}" style="color: black; text-decoration: none;"> {{todo.title }}</td> </a>
                 <td>
                   {% if todo.status == 'C' %} ✅ {% else %} ⏲️ {% endif %}
                 </td>
